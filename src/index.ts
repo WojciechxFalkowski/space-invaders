@@ -1,13 +1,14 @@
 import './scss/app.scss';
+import {Spaceship} from "./app/spaceship";
 
 const WIDTH = window.innerWidth;
 const HEIGHT = window.innerHeight;
 const SMALLER_SCREEN_VALUE = WIDTH<HEIGHT?HEIGHT:WIDTH
-// console.log(WIDTH,HEIGHT,SMALLER_SCREEN_VALUE)
 const rows = 8;
 const cols = 16;
 const aliens: any = []
 const width: number = SMALLER_SCREEN_VALUE / cols, height: number = SMALLER_SCREEN_VALUE / cols
+
 document.addEventListener("keydown",moveKey)
 
 const createCanvas = (width: number, height: number): HTMLCanvasElement => {
@@ -23,32 +24,6 @@ const createCanvas = (width: number, height: number): HTMLCanvasElement => {
 const canvas = createCanvas(WIDTH, HEIGHT);
 const ctx = canvas.getContext('2d');
 
-class Spaceship {
-    public x: number = 0;
-    public y: number = 0;
-
-    constructor(protected positionX: number, protected positionY: number) {
-        this.x = positionX;
-        this.y = positionY;
-
-    }
-
-    render(ctx: CanvasRenderingContext2D) {
-        ctx.beginPath();
-        ctx.fillStyle = "#ff0000";
-        ctx.fillRect(this.x, this.y, width, width);
-        ctx.stroke();
-    }
-    move(value:number)
-    {
-        console.log(`Wartosc: ${value}pozycja: ${this.x}`)
-        if(this.x> Math.abs(value))
-        {
-            this.x +=value
-        }
-
-    }
-}
 
 class Alien {
     public x: number = 0;
