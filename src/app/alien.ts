@@ -1,6 +1,4 @@
-const WIDTH = window.innerWidth;
-const HEIGHT = window.innerHeight;
-const cols = 16;
+import {WIDTH,cols} from "./variables";
 
 export class Alien {
     public x: number = 0;
@@ -12,6 +10,7 @@ export class Alien {
 
     }
 
+    //Rysowanie obcego
     render(ctx: CanvasRenderingContext2D) {
         ctx.beginPath();
         ctx.rect(this.x, this.y, WIDTH / cols, WIDTH / cols);
