@@ -6,7 +6,7 @@ export class Bullet {
     public shooter:string = "player"
 
     constructor(protected positionX: number, protected  positionY: number,protected whoShooted:string) {
-        this.x = positionX + width/2
+        this.x = positionX + width/2 - width/16
         this.y = positionY
         this.shooter = whoShooted
     }
@@ -16,12 +16,12 @@ export class Bullet {
     }
 
     render(ctx: CanvasRenderingContext2D) {
+
         ctx.beginPath();
-        ctx.arc(this.x , this.y, 10, 0, 2 * Math.PI, false);
         ctx.fillStyle = 'green';
-        ctx.fill();
-        ctx.strokeStyle = '#003300';
+        ctx.fillRect(this.x, this.y, width/8, width/4);
         ctx.stroke();
+
     }
 
 
