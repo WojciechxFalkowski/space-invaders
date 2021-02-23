@@ -1,56 +1,51 @@
 import './scss/app.scss';
 import {Spaceship} from "./app/spaceship";
+import {Alien} from './app/alien'
+import {createCanvas} from "./app/canvas";
 
+//Szerokość ekranu canvas
 const WIDTH = window.innerWidth;
+
+//Wysokosc ekranu canvas
 const HEIGHT = window.innerHeight;
+
+//Wybieram szerokosc lub wysokosc zaleznie co jest mniejsze
 const SMALLER_SCREEN_VALUE = WIDTH<HEIGHT?HEIGHT:WIDTH
+
+//Liczba wierszy
 const rows = 8;
+
+//Liczba kolumn
 const cols = 16;
+
+//Tablica statkow obych
 const aliens: any = []
-const width: number = SMALLER_SCREEN_VALUE / cols, height: number = SMALLER_SCREEN_VALUE / cols
 
-document.addEventListener("keydown",moveKey)
+// Szerokosc jednej komorki
+const width: number = SMALLER_SCREEN_VALUE / cols
 
-const createCanvas = (width: number, height: number): HTMLCanvasElement => {
-    const canvas = document.createElement('canvas');
-    canvas.width = width;
-    canvas.height = height;
+//Wysokosc jednej komorki
+const height: number = SMALLER_SCREEN_VALUE / cols
 
-    document.body.appendChild(canvas);
-
-    return canvas;
-}
-
+//Tworzenie canvas
 const canvas = createCanvas(WIDTH, HEIGHT);
 const ctx = canvas.getContext('2d');
 
-
-class Alien {
-    public x: number = 0;
-    public y: number = 0;
-
-    constructor(protected positionX: number, protected positionY: number) {
-        this.x = positionX;
-        this.y = positionY;
-
-    }
-
-    render(ctx: CanvasRenderingContext2D) {
-        ctx.beginPath();
-        ctx.rect(this.x, this.y, WIDTH / cols, WIDTH / cols);
-        ctx.stroke();
-    }
-};
+document.addEventListener("keydown",moveKey)
 
 
+//Generowania obcych
 for (let i = 0; i < rows; ++i) {
     for (let j = 0; j < cols; ++j) {
         aliens.push(new Alien(j * (WIDTH / cols), i * (WIDTH / cols)))
     }
 }
 
+
+//Rysowanie grida w canvas
 function drawLines() {
 
+    // Wysrodkowanie grida w pionie i poziomie
     const midWidth = WIDTH / 2 - (cols / 2) * width
     const midHeight = HEIGHT / 2 - (rows / 2) * height
 
