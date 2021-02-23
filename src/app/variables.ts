@@ -40,4 +40,3 @@ export const midHeight = HEIGHT / 2 - (rows / 2) * height
 
 //liczba kolumn z obcymi
 export const columnsOfAliens = rows - 3
-

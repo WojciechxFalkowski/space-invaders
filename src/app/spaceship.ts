@@ -1,8 +1,10 @@
 import {width} from "./variables";
+import {Bullet} from "./bullet";
 
 export class Spaceship {
     public x: number = 0;
     public y: number = 0;
+    public bullets: Bullet[] = []
 
     constructor(protected positionX: number, protected positionY: number) {
         this.x = positionX;
@@ -21,4 +23,6 @@ export class Spaceship {
     move(value: number) {
         this.x += value
     }
+
 }
+
