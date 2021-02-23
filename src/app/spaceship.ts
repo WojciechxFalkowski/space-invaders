@@ -1,5 +1,6 @@
 import {width} from "./variables";
 import {Bullet} from "./bullet";
+import {WIDTH} from "./variables";
 
 export class Spaceship {
     public x: number = 0;
@@ -21,7 +22,11 @@ export class Spaceship {
     }
 
     move(value: number) {
-        this.x += value
+        if((this.x!==0&&Math.sign(value)===-1)||(this.x!==WIDTH-width&&Math.sign(value)===1))
+        {
+            this.x +=value
+        }
+
     }
 
 }

@@ -55,10 +55,10 @@ function collisionDetector(aliens:AlienRow[],) {
                     for (let k = 0; k < aliens[j].aliens.length; k++) {
                         // console.log(aliens[j].aliens[k].positionX,this.bullets[i].x)
 
-                        if (aliens[j].aliens[k].positionX <= this.bullets[i].x && aliens[j].aliens[k].positionX + width >= this.bullets[i].x) {
+                        if (aliens[j].aliens[k].positionX <= bullets[i].x && aliens[j].aliens[k].positionX + width >= this.bullets[i].x) {
                             console.log("Teraz")
                             console.log(`Uderzony alien: ${k}`)
-                            this.removeBullet(i)
+                            removeBullet(i)
                             aliens[j].removeAlien(k)
                             break
                         }
@@ -85,7 +85,7 @@ const renderAliens = () => {
 
 
 }
-setTimeout(renderAliens, 100)
+setTimeout(renderAliens, 10000000)
 
 
 function renderGame() {
