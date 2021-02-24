@@ -5,10 +5,9 @@ import {width} from "./variables";
 export class AlienRow {
     public x: number = 0
     public width: number = 0
-    public aliens: any[] = []
+    public aliens: Alien[] = []
     public direction: { x: number, y: number } = {x: 1, y: 0}
     public canAdvance: boolean = true
-    public length: number = 12
 
     constructor(public y: number) {
         this.x = 2 * width

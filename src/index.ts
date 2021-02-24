@@ -102,7 +102,7 @@ let aliensRows: AlienRow[] = [new AlienRow(0), new AlienRow(width)]
 const renderAliens = (fr: number) => {
 
     for (const row of aliensRows) {
-        if (fr % 20 === 0) {
+        if (fr % 120 === 0) {
             row.move()
             if ((row.x + row.width >= WIDTH || row.x <= 0 - indexOfFirstAlien(aliensRows) * width) && row.canAdvance) {
                 row.advance()
@@ -126,6 +126,8 @@ function renderGame() {
     if (!isGameOver) {
         isGameOver = checkIsOverGame(aliensRows)
         renderAliens(frameCount)
+        // randomAlienShoot(aliensRows,frameCount)
+
     }
     if (isGameOver) {
         Score.renderNewGame(ctx, hasWon)
@@ -142,6 +144,7 @@ function renderGame() {
             bullets.splice(i, 1)
         }
     }
+    randomAlienShoot(aliensRows,frameCount)
     collisionDetector(bullets, aliensRows, Player)
     Player.render(ctx)
     Score.render(ctx)
@@ -179,4 +182,37 @@ function indexOfFirstAndLastAlien(rowOfAliens: AlienRow[]) {
         }
     }
     return lastAlien
+}
+
+function randomAlienShoot(rowOfAliens: AlienRow[],fr:number)
+{
+    if(fr%60===0)
+    {
+        const aliveAliensInOneLine =  checkAliveAliensInLine(rowOfAliens)
+        const aliensInFirstRow = rowOfAliens[0].width/width
+        const index = Math.floor(Math.random()*aliensInFirstRow)
+        if(aliveAliensInOneLine[index]!==0)
+        {
+            console.log(`Strzeli alien: ${index} w linii: ${aliveAliensInOneLine[index]}`)
+            /**
+             * Tutaj skonczylem mam juz wyznaczony obcy ktory bedzie strzelal, teraz musi strzelac...
+             */
+            console.log(rowOfAliens[aliveAliensInOneLine[index]-1].aliens[index])
+        }
+    }
+}
+function checkAliveAliensInLine(rowOfAliens: AlienRow[])
+{
+    const aliveAliensInOneLine:any[]=[0,0,0,0,0,0,0,0,0,0,0,0]
+    for(let i =0;i<12;i++)
+    {
+       for(let j=1;j>=0;j--)
+       {
+           if(rowOfAliens[j].aliens[i].isAlive)
+           {
+               ++aliveAliensInOneLine[i]
+           }
+       }
+    }
+    return aliveAliensInOneLine
 }
