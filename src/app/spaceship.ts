@@ -5,7 +5,6 @@ import {WIDTH} from "./variables";
 export class Spaceship {
     public x: number = 0;
     public y: number = 0;
-    public bullets: Bullet[] = []
 
     constructor(protected positionX: number, protected positionY: number) {
         this.x = positionX;

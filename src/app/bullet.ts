@@ -11,8 +11,11 @@ export class Bullet {
         this.shooter = whoShooted
     }
 
-    update() {
+    update(shooter:string) {
+        if(shooter==='player')
+        {
             this.y -= 5
+        }
     }
 
     render(ctx: CanvasRenderingContext2D) {

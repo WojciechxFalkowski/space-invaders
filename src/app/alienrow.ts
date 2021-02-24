@@ -14,6 +14,8 @@ export class AlienRow {
         for (let i = 0; i < aliensInRow; i++) {
             this.aliens.push(new Alien(this.x + i * width, this.y))
         }
+        console.log(this.aliens)
+
         this.width = this.aliens.length * width
     }
 
@@ -53,7 +55,9 @@ export class AlienRow {
     }
 
     removeAlien(indexOfAlienToRemove:number) {
-        this.aliens.splice(indexOfAlienToRemove,1)
+        const deletedElement = this.aliens.splice(indexOfAlienToRemove,1)
+    console.log(deletedElement)
+        console.log(this.aliens)
     }
 
 }
