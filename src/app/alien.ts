@@ -3,6 +3,7 @@ import {WIDTH,cols} from "./variables";
 export class Alien {
     public x: number = 0;
     public y: number = 0;
+    public isAlive:boolean = true
 
     constructor(protected positionX: number, protected positionY: number) {
         this.x = positionX;

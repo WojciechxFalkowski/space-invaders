@@ -8,14 +8,13 @@ export class AlienRow {
     public aliens: any[] = []
     public direction: { x: number, y: number } = {x: 1, y: 0}
     public canAdvance: boolean = true
+    public length: number = 12
 
     constructor(public y: number) {
         this.x = 2 * width
         for (let i = 0; i < aliensInRow; i++) {
             this.aliens.push(new Alien(this.x + i * width, this.y))
         }
-        console.log(this.aliens)
-
         this.width = this.aliens.length * width
     }
 
@@ -30,7 +29,9 @@ export class AlienRow {
 
     render(ctx: CanvasRenderingContext2D) {
         for (const alien of this.aliens) {
-            alien.render(ctx)
+            if (alien.isAlive) {
+                alien.render(ctx)
+            }
         }
     }
 
@@ -54,10 +55,12 @@ export class AlienRow {
         this.direction.x *= -1
     }
 
-    removeAlien(indexOfAlienToRemove:number) {
-        const deletedElement = this.aliens.splice(indexOfAlienToRemove,1)
-    console.log(deletedElement)
-        console.log(this.aliens)
+    removeAlien(indexOfAlien: number) {
+        this.aliens[indexOfAlien].isAlive = false
+    }
+
+    changeLengthOfRow(length: number) {
+        this.width = length * width
     }
 
 }
