@@ -39,4 +39,4 @@ export const midWidth = WIDTH / 2 - (cols / 2) * width
 export const midHeight = HEIGHT / 2 - (rows / 2) * height
 
 //liczba kolumn z obcymi
-export const columnsOfAliens = rows - 3
+export const columnsOfAliens = 2

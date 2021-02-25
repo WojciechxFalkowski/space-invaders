@@ -1,41 +1,58 @@
-import {HEIGHT, midHeight, midWidth, width, WIDTH} from "./variables";
+export class Points {
+    public points: number = 0;
+    public pointsInfoElement = document.querySelector('.points')
+    public popup = document.querySelector('.popup')
 
-export class Points{
-  public points:number =0;
-  constructor(private x:number) {
-      this.points = x
-  }
+    constructor(private x: number) {
+        this.points = x
+        this.showPoints()
+    }
 
-  render(ctx:CanvasRenderingContext2D)
-  {
-      ctx.font = "20px Arial";
-      ctx.fillText(`Points: ${this.points}`, 10, 20);
-  }
-  addPoints()
-  {
-      this.points +=1
-  }
-  renderNewGame(ctx:CanvasRenderingContext2D,hasWon:boolean|null)
-  {
-      ctx.beginPath();
-      ctx.fillStyle = "black";
-      ctx.fillRect(WIDTH/2 - width*3, HEIGHT/2-width*2, width*7, width*4);
-      ctx.stroke();
-      ctx.fillStyle = "white";
-      if(hasWon)
-      {
-          ctx.font = "20px Arial";
-          ctx.fillText("Gratuluje wygrałeś!", WIDTH/2 - 30, HEIGHT/2 - width);
-          ctx.fillText(`Uzyskałeś: ${this.points} punktów`, WIDTH/2 - 40, HEIGHT/2);
-          ctx.fillText("Zagraj ponownie [ENTER]", WIDTH/2 - 60, HEIGHT/2 + width);
-      }
-      else
-      {
-          ctx.font = "30px Arial";
-          ctx.fillText("Przegrałeś", WIDTH/2 - 30, HEIGHT/2 - width);
-          ctx.fillText("Zagraj ponownie [ENTER]", WIDTH/2 - 120, HEIGHT/2 + width);
+    addPoints() {
+        this.points += 1
+        this.showPoints()
+    }
 
-      }
+    renderNewGame(ctx: CanvasRenderingContext2D, hasWon: boolean | null) {
+        this.displayPopup(true)
+        if (hasWon && this.popup) {
+            if (this.popup) {
+                this.popup.innerHTML = `
+            <p class="is-won">Wygrałeś</p>
+            <p class="popup-points">Uzyskałeś ${this.points} punktów</p>
+            <p class="play-again">Zagraj ponownie [ENTER]</p>`
 
-  }
+            }
+
+        } else if (!hasWon && this.popup) {
+            if (this.popup) {
+                this.popup.innerHTML = `
+            <p class="is-won">Przegrałeś</p>
+            <p class="play-again">Zagraj ponownie [ENTER]</p>`
+
+            }
+        }
+    }
+
+    displayPopup(isActivePopup: boolean) {
+        if (this.popup) {
+            if (isActivePopup) {
+                this.popup.classList.add('popup--active')
+            } else {
+                this.popup.classList.remove('popup--active')
+            }
+        }
+    }
+
+    showPoints() {
+        if (this.pointsInfoElement) {
+            this.pointsInfoElement.innerHTML = `Points: ${this.points}`
+        }
+    }
+
+    restartPoints() {
+        this.points = 0;
+        this.showPoints()
+        this.displayPopup(false)
+    }
 }

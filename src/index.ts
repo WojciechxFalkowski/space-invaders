@@ -4,111 +4,119 @@ import {Bullet} from "./app/bullet";
 import {AlienRow} from './app/alienrow'
 import {Points} from './app/points'
 import {Alien} from './app/alien'
-import {
-    WIDTH, HEIGHT, SMALLER_SCREEN_VALUE, rows, cols, aliens, width, height,
-    canvas, ctx, aliensInRow, midWidth, midHeight, columnsOfAliens
-} from "./app/variables";
+import {collisionDetector} from './app/collision'
+import {WIDTH, HEIGHT, width, ctx, aliensInRow, columnsOfAliens} from "./app/variables";
 
+let pauseGame = true;
 let isGameOver = false
-let Player = new Spaceship(WIDTH / 2, HEIGHT - width)
-const bullets: Bullet[] = []
-let Score = new Points(0)
+let frameCount = 0;
 let hasWon: boolean | null = null
+let numberOfAliveAliens: number;
+
+const player = new Spaceship(WIDTH / 2, HEIGHT - width)
+const bullets: Bullet[] = []
+const score = new Points(0)
+
+score.displayPopup(true)
+
+//Obsługa przycisków
 document.addEventListener("keydown", (event: KeyboardEvent) => {
-    switch (event.keyCode) {
-        case 32: {
-            bullets.push(new Bullet(Player.x, Player.y, "player"))
+    switch (event.code) {
+        case "Space": {
+            let flag = true
+            for (let i = 0; i < bullets.length; i++) {
+                if (bullets[i].shooter === "player") {
+                    flag = false
+                }
+            }
+            if (flag) {
+                bullets.push(new Bullet(player.x, player.y, "player"))
+            }
             break;
         }
-        case 37: {
-            moveSpaceship(Player, -width)
+        case "KeyA": {
+            player.move(-width)
             break;
         }
-        case 39: {
-            moveSpaceship(Player, width)
+        case "KeyD": {
+            player.move(width)
             break;
         }
-        case 65: {
-            moveSpaceship(Player, -width)
+        case "ArrowLeft": {
+            player.move(-width)
             break;
         }
-        case 68: {
-            moveSpaceship(Player, width)
+        case "ArrowRight": {
+            player.move(width)
             break;
         }
-        case 13: {
-            isGameOver = false
-            hasWon = null
-            aliensRows = [new AlienRow(0), new AlienRow(width)]
-            Player = new Spaceship(WIDTH / 2, HEIGHT - width)
-            Score = new Points(0)
-            setTimeout(renderAliens, 10)
+        case "Enter": {
+            restartGame(player, score)
             break
         }
         default: {
-            console.log("Nie poprawny klawisz!")
             break;
         }
     }
 
 })
 
-function moveSpaceship(player: Spaceship, amount: number) {
-    Player.move(amount)
+//Ustawianie opcji na nowo
+function restartGame(player: Spaceship, score: Points) {
+    isGameOver = false
+    hasWon = null
+    pauseGame = false
+    player.restartSpaceship()
+    score.restartPoints()
+    hasWon = null
+    for (let i = 0; i <= bullets.length; i++) {
+        bullets.pop()
+    }
+    aliensRows = [new AlienRow(0), new AlienRow(width)]
 }
 
 //Sprawdzam czy wiersze z obcymi sa puste, aby zakonczyc gre
-function checkIsOverGame(aliens: AlienRow[]) {
+function checkIsOverGame(aliens: AlienRow[], player: Spaceship) {
     let flag = true
+    numberOfAliveAliens = -columnsOfAliens * 6
     for (const row of aliens) {
         for (const alien of row.aliens) {
             if (alien.isAlive) {
                 flag = false
+            } else {
+                ++numberOfAliveAliens
             }
         }
     }
+    if (player.life <= 0) {
+        flag = true
+    }
     if (flag) {
         hasWon = true
+        if (player.life > 0) {
+            score.renderNewGame(ctx, hasWon)
+
+        } else {
+            score.renderNewGame(ctx, false)
+
+        }
     }
     return flag
 }
 
-function collisionDetector(bullets: Bullet[], aliens: AlienRow[], player: Spaceship) {
-    //sprawdzam czy sa kule i obcy w tablicach
-    if (bullets.length > 0 && aliens.length > 0) {
-        for (let i = 0; i < bullets.length; i++) {
-            for (let j = 0; j < aliens.length; j++) {
-                if (bullets[i].y >= aliens[j].y && bullets[i].y <= aliens[j].y + width) {
-                    for (let k = 0; k < aliens[j].aliens.length; k++) {
-                        if (aliens[j].aliens.length > 0) {
-                            if (aliens[j].aliens[k].x <= bullets[i].x && aliens[j].aliens[k].x + width >= bullets[i].x && aliens[j].aliens[k].isAlive) {
-                                bullets.splice(i, 1)
-                                aliens[j].removeAlien(k)
-                                Score.addPoints()
-                                for (const row of aliens) {
-                                    row.changeLengthOfRow(indexOfFirstAndLastAlien(aliensRows))
-                                }
-                                return
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
 
 let aliensRows: AlienRow[] = [new AlienRow(0), new AlienRow(width)]
 const renderAliens = (fr: number) => {
-
     for (const row of aliensRows) {
-        if (fr % 120 === 0) {
+
+        if (fr % (120 - numberOfAliveAliens * 6) === 0) {
             row.move()
             if ((row.x + row.width >= WIDTH || row.x <= 0 - indexOfFirstAlien(aliensRows) * width) && row.canAdvance) {
                 row.advance()
             } else if (row.y + width >= HEIGHT - width * 2) {
                 isGameOver = true
                 hasWon = false
+                score.renderNewGame(ctx, hasWon)
             }
         }
         row.update()
@@ -117,47 +125,47 @@ const renderAliens = (fr: number) => {
 
 }
 
+function renderGame(bullets: Bullet[]) {
+    if (!pauseGame) {
 
-let frameCount = 0;
+        frameCount++;
+        ctx.clearRect(0, 0, WIDTH, HEIGHT)
+        if (!isGameOver) {
+            isGameOver = checkIsOverGame(aliensRows, player)
+            renderAliens(frameCount)
+            if ((frameCount + 30) % 60 === 0) {
+                const aggressiveAlien = randomAlienShoot(aliensRows)
+                if (aggressiveAlien) {
+                    bullets.push(new Bullet(aggressiveAlien.x, aggressiveAlien.y + width, 'alien'))
+                }
 
-function renderGame() {
-    frameCount++;
-    ctx.clearRect(0, 0, WIDTH, HEIGHT)
-    if (!isGameOver) {
-        isGameOver = checkIsOverGame(aliensRows)
-        renderAliens(frameCount)
-        // randomAlienShoot(aliensRows,frameCount)
-
-    }
-    if (isGameOver) {
-        Score.renderNewGame(ctx, hasWon)
-    }
-
-
-    //Rysowanie pocisku
-    for (let i = 0; i < bullets.length; ++i) {
-        bullets[i].render(ctx)
-        bullets[i].update(bullets[i].shooter)
-
-        //Usuwanie pocisku
-        if (bullets[i].y < 0) {
-            bullets.splice(i, 1)
+            }
         }
+
+        //Rysowanie pocisku
+        for (let i = 0; i < bullets.length; ++i) {
+            bullets[i].render(ctx)
+            bullets[i].update(bullets[i].shooter)
+
+            //Usuwanie pocisku
+            if (bullets[i].y < 0 || bullets[i].y >= HEIGHT) {
+                bullets.splice(i, 1)
+            }
+        }
+        collisionDetector(bullets, aliensRows, player, score)
+        player.render(ctx)
     }
-    randomAlienShoot(aliensRows,frameCount)
-    collisionDetector(bullets, aliensRows, Player)
-    Player.render(ctx)
-    Score.render(ctx)
-    window.requestAnimationFrame(renderGame);
+    window.requestAnimationFrame(() => renderGame(bullets));
 }
 
-renderGame()
+renderGame(bullets)
+
 
 function indexOfFirstAlien(rowOfAliens: AlienRow[]) {
     let firstAlien = aliensInRow
     for (const alien of rowOfAliens) {
         const indexOfFirstAlien = alien.aliens.findIndex((item: Alien) => {
-            return item.isAlive === true
+            return item.isAlive
         })
         if (firstAlien > indexOfFirstAlien && indexOfFirstAlien !== -1) {
             firstAlien = indexOfFirstAlien
@@ -166,53 +174,28 @@ function indexOfFirstAlien(rowOfAliens: AlienRow[]) {
     return firstAlien
 }
 
-function indexOfFirstAndLastAlien(rowOfAliens: AlienRow[]) {
-    let lastAlien = 0
-    for (const alien of rowOfAliens) {
-        const indexOfFirstAlien = alien.aliens.findIndex((item: Alien) => {
-            return item.isAlive === true
-        })
-        const reversedArray = [...alien.aliens].reverse()
-        const indexOfLastAliveAlien = aliensInRow - reversedArray.findIndex((item: Alien) => {
-            return item.isAlive === true
-        })
 
-        if (lastAlien < indexOfLastAliveAlien && indexOfFirstAlien !== -1) {
-            lastAlien = indexOfLastAliveAlien
-        }
+function randomAlienShoot(rowOfAliens: AlienRow[]) {
+    const aliveAliensInOneLine = checkAliveAliensInLine(rowOfAliens)
+    const aliensInFirstRow = rowOfAliens[0].width / width
+    const index = Math.floor(Math.random() * aliensInFirstRow)
+
+    if (aliveAliensInOneLine[index] !== 0) {
+        return rowOfAliens[aliveAliensInOneLine[index] - 1].aliens[index]
     }
-    return lastAlien
+
 }
 
-function randomAlienShoot(rowOfAliens: AlienRow[],fr:number)
-{
-    if(fr%60===0)
-    {
-        const aliveAliensInOneLine =  checkAliveAliensInLine(rowOfAliens)
-        const aliensInFirstRow = rowOfAliens[0].width/width
-        const index = Math.floor(Math.random()*aliensInFirstRow)
-        if(aliveAliensInOneLine[index]!==0)
-        {
-            console.log(`Strzeli alien: ${index} w linii: ${aliveAliensInOneLine[index]}`)
-            /**
-             * Tutaj skonczylem mam juz wyznaczony obcy ktory bedzie strzelal, teraz musi strzelac...
-             */
-            console.log(rowOfAliens[aliveAliensInOneLine[index]-1].aliens[index])
+function checkAliveAliensInLine(rowOfAliens: AlienRow[]) {
+    const aliveAliensInOneLine: any[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+    for (let i = 0; i < 12; i++) {
+        for (let j = 1; j >= 0; j--) {
+            if (rowOfAliens[j].aliens[i].isAlive) {
+                ++aliveAliensInOneLine[i]
+            }
         }
     }
-}
-function checkAliveAliensInLine(rowOfAliens: AlienRow[])
-{
-    const aliveAliensInOneLine:any[]=[0,0,0,0,0,0,0,0,0,0,0,0]
-    for(let i =0;i<12;i++)
-    {
-       for(let j=1;j>=0;j--)
-       {
-           if(rowOfAliens[j].aliens[i].isAlive)
-           {
-               ++aliveAliensInOneLine[i]
-           }
-       }
-    }
+
     return aliveAliensInOneLine
 }

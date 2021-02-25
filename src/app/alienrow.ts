@@ -14,6 +14,11 @@ export class AlienRow {
         for (let i = 0; i < aliensInRow; i++) {
             this.aliens.push(new Alien(this.x + i * width, this.y))
         }
+        for (let i = 0; i < aliensInRow; i++) {
+            if (i % 2 === 0 ) {
+                this.aliens[i].isAlive = false
+            }
+        }
         this.width = this.aliens.length * width
     }
 
@@ -60,6 +65,9 @@ export class AlienRow {
 
     changeLengthOfRow(length: number) {
         this.width = length * width
+    }
+    restartAlienRows(){
+
     }
 
 }
