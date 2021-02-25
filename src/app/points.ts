@@ -17,7 +17,7 @@ export class Points {
     renderNewGame(ctx: CanvasRenderingContext2D, hasWon: boolean | null) {
         this.displayPopup(true)
         if (hasWon && this.popup) {
-            this.addScoreToStorage(this.points)
+            this.addScoreToStorage()
             if (this.popup) {
                 this.popup.innerHTML = `
             <p class="is-won">Wygrałeś</p>
@@ -27,7 +27,7 @@ export class Points {
             }
 
         } else if (!hasWon && this.popup) {
-            this.addScoreToStorage(this.points)
+            this.addScoreToStorage()
             if (this.popup) {
                 this.popup.innerHTML = `
             <p class="is-won">Przegrałeś</p>
@@ -60,9 +60,12 @@ export class Points {
         this.takeScoreFromStorage()
     }
 
-    addScoreToStorage(bestScore: number) {
-        if ("localStorage" in window) {
-            localStorage.setItem("score", `${bestScore}`)
+    addScoreToStorage() {
+        if ("localStorage" in window && this.bestScore && localStorage["score"]) {
+            const bestScoreFromLocalStorage = Number(localStorage["score"])
+            if (bestScoreFromLocalStorage < this.points) {
+                localStorage.setItem("score", `${this.points}`)
+            }
         } else {
             alert("no localStorage in window");
         }

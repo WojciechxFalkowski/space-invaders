@@ -25,13 +25,9 @@ export class Bullet {
     }
 
     render(ctx: CanvasRenderingContext2D) {
-
         ctx.beginPath();
         ctx.fillStyle = 'green';
         ctx.fillRect(this.x, this.y, width / 8, width / 4);
         ctx.stroke();
-
     }
-
-
 }
