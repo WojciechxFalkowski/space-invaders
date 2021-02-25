@@ -1,13 +1,14 @@
 //Szerokość ekranu canvas
 import {createCanvas} from "./canvas";
 
+export const SMALLER_SCREEN_VALUE = window.innerWidth > window.innerHeight ? window.innerHeight : window.innerWidth
+
 export const WIDTH = window.innerWidth;
 
 //Wysokosc ekranu canvas
 export const HEIGHT = window.innerHeight;
 
 //Wybieram szerokosc lub wysokosc zaleznie co jest mniejsze
-export const SMALLER_SCREEN_VALUE = WIDTH < HEIGHT ? HEIGHT : WIDTH
 
 //Liczba wierszy
 export const rows = 8;
@@ -19,7 +20,7 @@ export const cols = 16;
 export const aliens: any = []
 
 // Szerokosc jednej komorki
-export const width: number = SMALLER_SCREEN_VALUE / cols
+export const width: number = WIDTH / cols
 
 //Wysokosc jednej komorki
 export const height: number = SMALLER_SCREEN_VALUE / cols
@@ -33,10 +34,6 @@ if(!ctx)
 }
 // liczba obcych w wierszu
 export const aliensInRow = cols - 4
-
-// Wysrodkowanie grida w pionie i poziomie
-export const midWidth = WIDTH / 2 - (cols / 2) * width
-export const midHeight = HEIGHT / 2 - (rows / 2) * height
 
 //liczba kolumn z obcymi
 export const columnsOfAliens = 2

@@ -148,7 +148,7 @@ function renderGame(bullets: Bullet[]) {
             bullets[i].update(bullets[i].shooter)
 
             //Usuwanie pocisku
-            if (bullets[i].y < 0 || bullets[i].y >= HEIGHT) {
+            if (bullets[i].y < 0 || bullets[i].y >= HEIGHT-width) {
                 bullets.splice(i, 1)
             }
         }

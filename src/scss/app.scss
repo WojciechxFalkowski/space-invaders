@@ -15,7 +15,11 @@ html, body {
   font-size: 32px;
   text-align: center;
 }
-
+.best-score {
+  position: absolute;
+  bottom: 30px;
+  left: 10px;
+}
 .points {
   position: absolute;
   bottom: 10px;

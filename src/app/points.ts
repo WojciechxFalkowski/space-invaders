@@ -2,6 +2,7 @@ export class Points {
     public points: number = 0;
     public pointsInfoElement = document.querySelector('.points')
     public popup = document.querySelector('.popup')
+    public bestScore = document.querySelector('.best-score')
 
     constructor(private x: number) {
         this.points = x
@@ -16,6 +17,7 @@ export class Points {
     renderNewGame(ctx: CanvasRenderingContext2D, hasWon: boolean | null) {
         this.displayPopup(true)
         if (hasWon && this.popup) {
+            this.addScoreToStorage(this.points)
             if (this.popup) {
                 this.popup.innerHTML = `
             <p class="is-won">Wygrałeś</p>
@@ -25,6 +27,7 @@ export class Points {
             }
 
         } else if (!hasWon && this.popup) {
+            this.addScoreToStorage(this.points)
             if (this.popup) {
                 this.popup.innerHTML = `
             <p class="is-won">Przegrałeś</p>
@@ -54,5 +57,26 @@ export class Points {
         this.points = 0;
         this.showPoints()
         this.displayPopup(false)
+        this.takeScoreFromStorage()
+    }
+
+    addScoreToStorage(bestScore: number) {
+        if ("localStorage" in window) {
+            localStorage.setItem("score", `${bestScore}`)
+        } else {
+            alert("no localStorage in window");
+        }
+    }
+
+    takeScoreFromStorage() {
+        if ("localStorage" in window) {
+            if (localStorage.length > 0) {
+                if (this.bestScore) {
+                    this.bestScore.innerHTML = `Najlepszy wynik ${localStorage["score"]}`
+                }
+            }
+        } else {
+            alert("no localStorage in window");
+        }
     }
 }

@@ -55,7 +55,7 @@ export function collisionDetector(bullets: Bullet[], aliens: AlienRow[], player:
                         break
                     }
                 }
-            } else if (bullets[i].shooter === "alien" && bullets[i].y >= HEIGHT - width && bullets[i].y <= HEIGHT && bullets[i].x >= player.x && bullets[i].x <= player.x + width) {
+            } else if (bullets[i].shooter === "alien" && bullets[i].y >= HEIGHT - width*2 && bullets[i].y <= HEIGHT && bullets[i].x >= player.x && bullets[i].x <= player.x + width) {
                 bullets.splice(i, 1)
                 player.removeLife()
             }

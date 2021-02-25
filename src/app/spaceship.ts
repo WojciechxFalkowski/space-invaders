@@ -42,7 +42,7 @@ export class Spaceship {
 
     restartSpaceship() {
         this.x = WIDTH / 2
-        this.y = HEIGHT - width
+        this.y = HEIGHT - width*2
         this.life = 3
         this.showLife()
     }
