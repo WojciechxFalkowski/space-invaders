@@ -187,7 +187,7 @@ function randomAlienShoot(rowOfAliens: AlienRow[]) {
 }
 
 function checkAliveAliensInLine(rowOfAliens: AlienRow[]) {
-    const aliveAliensInOneLine: any[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    const aliveAliensInOneLine: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
 
     for (let i = 0; i < 12; i++) {
         for (let j = 1; j >= 0; j--) {

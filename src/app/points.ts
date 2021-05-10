@@ -66,8 +66,6 @@ export class Points {
             if (bestScoreFromLocalStorage < this.points) {
                 localStorage.setItem("score", `${this.points}`)
             }
-        } else {
-            alert("no localStorage in window");
         }
     }
 
@@ -75,11 +73,10 @@ export class Points {
         if ("localStorage" in window) {
             if (localStorage.length > 0) {
                 if (this.bestScore) {
-                    this.bestScore.innerHTML = `Najlepszy wynik ${localStorage["score"]}`
+                    this.bestScore.innerHTML = localStorage["score"] ? `Najlepszy wynik: ${localStorage["score"]}` : ""
                 }
             }
-        } else {
-            alert("no localStorage in window");
         }
     }
+
 }
